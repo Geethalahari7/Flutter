@@ -1,0 +1,25 @@
+const express = require('express');
+const app = express();
+const PORT = 3000;
+app.set('view engine', 'ejs');
+app.get('/', (req, res) => {
+const data = { title: 'Home Page', message: 'Welcome to EJS Exam res.render('sample', data); // Render the 'index.ejs' template });
+app.listen(PORT, () => {
+console.log('Server running at http://localhost: ${PORT}'); });
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title><%= title %></title>
+</head>
+<body>
+<h1><%= message %></h1>
+<p>This page is rendered using the <b>EJS</b> templating engine.</p>
+</body>
+</html>
+
+npm i express 
+npm i ejs
+node sever.js
