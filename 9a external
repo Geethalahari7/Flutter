@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) => const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'REST API Demo',
+    home: PostListScreen(),
+  );
+}
+
+class PostListScreen extends StatelessWidget {
+  const PostListScreen({super.key});
+
+  Future<List> fetchPosts() async {
+    final res = await http.get(
+      Uri.parse('https://jsonplaceholder.typicode.com/posts'),
+    );
+    if (res.statusCode == 200) return json.decode(res.body);
+    throw Exception('Failed to load posts');
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('REST API Data'), centerTitle: true),
+    body: FutureBuilder<List>(
+      future: fetchPosts(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final posts = snapshot.data!;
+        return ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (context, i) {
+            final post = posts[i];
+            return Card(
+              margin: const EdgeInsets.all(8),
+              child: ListTile(
+                leading: CircleAvatar(child: Text('${post['id']}')),
+                title: Text(post['title']),
+                subtitle: Text(
+                  post['body'],
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ),
+  );
+}
